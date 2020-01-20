@@ -22,16 +22,25 @@ class Cell_Controller: UITableViewCell {
     @IBOutlet weak var completeView: UIView!
     
     
-    var goalProgress:Int32?
+    //var goalProgress:Int16?
     
     
     func cellDisplay(task: Task ){
         
         self.descriptionLbl.text = task.taskDescription
         self.dateLbl.text = task.taskDate
-        self.goalProgress = task.progress
+        self.daysLbl.text = String(task.taskCompletionValue)
+       // self.goalProgress = task.progress
         
-        
+        if task.progress == task.taskCompletionValue {
+            
+            completeView.isHidden = false
+           
+        }else{
+            
+            self.completeView.isHidden = true
+        }
+         
         
         
         

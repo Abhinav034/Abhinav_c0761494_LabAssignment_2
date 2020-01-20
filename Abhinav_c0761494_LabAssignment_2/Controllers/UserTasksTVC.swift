@@ -12,12 +12,15 @@ import CoreData
 var appDelegate = UIApplication.shared.delegate as? AppDelegate
 class UserTasksTVC: UITableViewController {
     
+    @IBOutlet weak var sortButton: UIBarButtonItem!
     
+    @IBOutlet weak var searchBar: UISearchBar!
     var taskArray:[Task] = []
-
+    var search:[Task] = []
+    var searching = false
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        searchBar.delegate = self
         fetchData()
     }
     
@@ -36,19 +39,34 @@ class UserTasksTVC: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if searching {
+            
+            return search.count
+        }
+        else{
+            return taskArray.count
+        }
         
-        return taskArray.count
+        
     }
 
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! Cell_Controller
-
-        cell.descriptionLbl.text = taskArray[indexPath.row].taskDescription
-        cell.dateLbl.text = taskArray[indexPath.row].taskDate
-        cell.daysLbl.text = "0"
-        cell.goalProgress = taskArray[indexPath.row].progress
-        return cell
+        if searching{
+            
+             let items = search[indexPath.row]
+             cell.cellDisplay(task: items)
+             return cell
+               }
+        else{
+                let items = taskArray[indexPath.row]
+                cell.cellDisplay(task: items)
+                return cell
+        }
+        
+       
     }
    
 
@@ -71,13 +89,8 @@ class UserTasksTVC: UITableViewController {
     func editAction(indexPath: IndexPath) -> UIContextualAction{
         let action = UIContextualAction(style: .normal, title: "Add 1") { (action, view, complete) in
             
-            
-            
-            
-            
-            
-            
-            
+            self.progress(indexPath: indexPath)
+            self.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
         action.backgroundColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
         return action
@@ -88,6 +101,11 @@ class UserTasksTVC: UITableViewController {
         
         let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, complete) in
             
+            
+            
+            
+            
+            
             self.removeTask(indexPath: indexPath)
             self.fetchData()
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
@@ -97,52 +115,32 @@ class UserTasksTVC: UITableViewController {
         
         return action
         
-        
-        
-        
     }
     
     
     
     
+    @IBAction func sortArray(_ sender: UIBarButtonItem) {
+        tableView.isEditing = true
+        
+    }
     
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
+        
         return true
     }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+ 
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        let source = taskArray[sourceIndexPath.row]
+        taskArray.remove(at: sourceIndexPath.row)
+        
+        taskArray.insert(source, at: destinationIndexPath.row)
+        
+        
     }
-    */
+
+  
  
     
 }
@@ -166,9 +164,12 @@ extension UserTasksTVC {
     func removeTask(indexPath : IndexPath){
         
      guard let managedContext = appDelegate?.persistentContainer.viewContext else{return}
-        
+        if searching{
+            managedContext.delete(search[indexPath.row])
+        }
+        else{
         managedContext.delete(taskArray[indexPath.row])
-        
+        }
         do {
             
             try managedContext.save()
@@ -178,11 +179,53 @@ extension UserTasksTVC {
             catch{
                 print(error)
             }
+        }
     
+    func progress( indexPath:IndexPath){
+         guard let managedContext = appDelegate?.persistentContainer.viewContext else{return}
+        let task = taskArray[indexPath.row]
         
+        if task.taskCompletionValue < task.progress {
+            
+            task.taskCompletionValue += 1
+            
+            
+        }else{
+            return
+        }
         
+        do {
+            try managedContext.save()
+        } catch  {
+            print(error)
+        }
         
     }
+    
+    
+}
+extension UserTasksTVC : UISearchBarDelegate{
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        search = taskArray.filter({$0.taskDescription!.prefix(searchText.count) == searchText})
+        
+        searching = true
+        tableView.reloadData()
+        
+    }
+    
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        searching = false
+        
+        tableView.reloadData()
+        
+    }
+    
     
     
     
