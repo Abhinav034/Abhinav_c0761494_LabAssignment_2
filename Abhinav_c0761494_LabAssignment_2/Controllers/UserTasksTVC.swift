@@ -42,7 +42,7 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
     
     func userTapped(){
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(tapsBegin))
-        doubleTap.numberOfTapsRequired = 1
+        doubleTap.numberOfTapsRequired = 2
         doubleTap.delegate = self
         self.tableView.addGestureRecognizer(doubleTap)
     }
@@ -93,6 +93,17 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
         
        
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let taskcompletion = taskArray[indexPath.row].taskCompletionValue
+        let taskDescription = taskArray[indexPath.row].taskDescription
+        let taskDate = taskArray[indexPath.row].taskDate
+       let taskDate1 = taskDate?.replacingOccurrences(of: "/", with: "")
+        print(taskDate1 as Any)
+    }
+    
+    
    
 
    
