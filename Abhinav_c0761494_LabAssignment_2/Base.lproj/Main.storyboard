@@ -126,11 +126,17 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Tasks" id="LNZ-s0-Ly7">
-                        <barButtonItem key="leftBarButtonItem" image="list.bullet" catalog="system" id="QPk-Qd-N0p">
-                            <color key="tintColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <connections>
-                                <action selector="sortArray:" destination="yUr-nA-1ui" id="GAp-IL-AqK"/>
-                            </connections>
+                        <barButtonItem key="leftBarButtonItem" style="plain" id="WAh-XA-0CQ">
+                            <button key="customView" opaque="NO" contentMode="scaleAspectFit" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="lKm-Xp-v1z">
+                                <rect key="frame" x="16" y="0.0" width="163" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Sort">
+                                    <color key="titleColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="sortPressed:" destination="yUr-nA-1ui" eventType="touchUpInside" id="HJL-mf-9gZ"/>
+                                </connections>
+                            </button>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Item" image="plus" catalog="system" id="sSZ-1Z-6Cx">
                             <color key="tintColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -141,7 +147,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="searchBar" destination="Dkb-8Q-cKC" id="c3p-6n-iKC"/>
-                        <outlet property="sortButton" destination="QPk-Qd-N0p" id="QD5-iU-gaQ"/>
+                        <outlet property="sortButton" destination="lKm-Xp-v1z" id="Vpy-T0-ksG"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ijY-6J-pyN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -273,7 +279,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" id="fRS-ap-xWn"/>
+                    <navigationItem key="navigationItem" id="fRS-ap-xWn">
+                        <barButtonItem key="backBarButtonItem" title="back" id="CIy-ko-NGE"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="taskProgressField" destination="tIE-QU-obd" id="Dq9-WK-GFs"/>
                         <outlet property="taskTextView" destination="5ZU-Z8-Su7" id="lsd-D0-DT8"/>
@@ -288,7 +296,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="list.bullet" catalog="system" width="64" height="44"/>
         <image name="plus" catalog="system" width="64" height="56"/>
     </resources>
 </document>

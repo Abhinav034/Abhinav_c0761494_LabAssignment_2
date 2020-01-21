@@ -12,12 +12,21 @@ import CoreData
 var appDelegate = UIApplication.shared.delegate as? AppDelegate
 class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
     
-    @IBOutlet weak var sortButton: UIBarButtonItem!
+ 
+    @IBOutlet weak var sortButton: UIButton!
     
     @IBOutlet weak var searchBar: UISearchBar!
+    
+    
+    
+    
     var taskArray:[Task] = []
     var search:[Task] = []
     var searching = false
+    var sorting = false
+    
+    
+    var id:IndexPath?
     override func viewDidLoad() {
         super.viewDidLoad()
         searchBar.delegate = self
@@ -77,6 +86,7 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
                }
         else{
                 let items = taskArray[indexPath.row]
+            id = indexPath
                 cell.cellDisplay(task: items)
                 return cell
         }
@@ -105,7 +115,7 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
         let action = UIContextualAction(style: .normal, title: "Add 1") { (action, view, complete) in
             
             self.progress(indexPath: indexPath)
-            self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            self.tableView.reloadData()
         }
         action.backgroundColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
         return action
@@ -127,28 +137,44 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
         
     }
     
+    // MARK: Sort button
     
     
-    
-    @IBAction func sortArray(_ sender: UIBarButtonItem) {
-        tableView.isEditing = true
+    @IBAction func sortPressed(_ sender: UIButton) {
+        
+        if sortButton.titleLabel?.text == "Sort"{
+                  sorting = true
+                  fetchData()
+                  tableView.reloadData()
+                  sorting = false
+            sortButton.setTitle("Unsort", for: .normal)
+              }
+        
+        else if sortButton.titleLabel?.text == "Unsort" {
+            
+            fetchData()
+            tableView.reloadData()
+            sortButton.setTitle("Sort", for: .normal)
+            
+        }
+        
+        
         
     }
+    
+    
+    
+   
+    
+    
+    
     
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         
         return true
     }
  
-    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        
-        let source = taskArray[sourceIndexPath.row]
-        taskArray.remove(at: sourceIndexPath.row)
-        
-        taskArray.insert(source, at: destinationIndexPath.row)
-        
-        
-    }
+   
 
   
  
@@ -162,6 +188,15 @@ extension UserTasksTVC {
            
            let fetchRequest = NSFetchRequest<Task>(entityName: "Task")
            
+        if sorting == true {
+            
+            let sort1 = NSSortDescriptor(key: "taskDescription", ascending: true)
+                 
+                 fetchRequest.sortDescriptors = [sort1]
+        }
+     
+       
+        
            do {
                taskArray = try managedContext.fetch(fetchRequest)
                print("fetched successfully")
@@ -197,16 +232,33 @@ extension UserTasksTVC {
     
     func progress( indexPath:IndexPath){
          guard let managedContext = appDelegate?.persistentContainer.viewContext else{return}
-        let task = taskArray[indexPath.row]
         
-        if task.taskCompletionValue < task.progress {
-            
-            task.taskCompletionValue += 1
-            
-            
-        }else{
-            return
+        if searching{
+            let add = search[indexPath.row]
+        
+            if add.taskCompletionValue < add.progress{
+                
+                add.taskCompletionValue += 1
+                
+                
+            }else{
+                return
+            }
+        
+        } else if searching == false {
+            let task = taskArray[indexPath.row]
+                  
+                  if task.taskCompletionValue < task.progress {
+                      
+                      task.taskCompletionValue += 1
+                      
+                      
+                  }else{
+                      return
+                  }
         }
+        
+      
         
         do {
             try managedContext.save()
