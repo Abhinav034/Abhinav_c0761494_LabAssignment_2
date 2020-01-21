@@ -26,7 +26,7 @@ class TaskVC: UIViewController , UITextViewDelegate , UITextFieldDelegate{
         super.viewDidLoad()
         taskTextView.delegate = self
         
-            //taskProgressField.delegate = self
+           
         
     }
     

@@ -22,7 +22,7 @@ class Cell_Controller: UITableViewCell {
     @IBOutlet weak var completeView: UIView!
     
     
-    //var goalProgress:Int16?
+   
     
     
     func cellDisplay(task: Task ){
@@ -30,7 +30,7 @@ class Cell_Controller: UITableViewCell {
         self.descriptionLbl.text = task.taskDescription
         self.dateLbl.text = task.taskDate
         self.daysLbl.text = String(task.taskCompletionValue)
-       // self.goalProgress = task.progress
+      
         
         if task.progress == task.taskCompletionValue {
             
