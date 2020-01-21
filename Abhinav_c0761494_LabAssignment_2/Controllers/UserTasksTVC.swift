@@ -278,8 +278,13 @@ extension UserTasksTVC : UISearchBarDelegate{
         
         searching = true
         
-        tableView.reloadData()
         
+        if searchBar.text == "" {
+            
+            searching = false
+            searchBar.resignFirstResponder()
+        }
+        tableView.reloadData()
     }
     
     
