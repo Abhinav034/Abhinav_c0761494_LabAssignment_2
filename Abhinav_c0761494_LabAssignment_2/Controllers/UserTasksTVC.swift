@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 var appDelegate = UIApplication.shared.delegate as? AppDelegate
-class UserTasksTVC: UITableViewController {
+class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
     
     @IBOutlet weak var sortButton: UIBarButtonItem!
     
@@ -22,6 +22,7 @@ class UserTasksTVC: UITableViewController {
         super.viewDidLoad()
         searchBar.delegate = self
         fetchData()
+        userTapped()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -30,6 +31,18 @@ class UserTasksTVC: UITableViewController {
         tableView.reloadData()
     }
     
+    func userTapped(){
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(tapsBegin))
+        doubleTap.numberOfTapsRequired = 1
+        doubleTap.delegate = self
+        self.tableView.addGestureRecognizer(doubleTap)
+    }
+    
+   @objc func tapsBegin(){
+        
+    self.tableView.endEditing(true)
+        
+    }
 
     // MARK: - Table view data source
 
@@ -40,12 +53,14 @@ class UserTasksTVC: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if searching {
-            
-            return search.count
+            if search.count > 0 {
+                 return search.count
+            }
+           
         }
-        else{
+        
             return taskArray.count
-        }
+       
         
         
     }
@@ -54,7 +69,7 @@ class UserTasksTVC: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! Cell_Controller
-        if searching{
+        if searching && search.count > 0{
             
              let items = search[indexPath.row]
              cell.cellDisplay(task: items)
@@ -100,11 +115,6 @@ class UserTasksTVC: UITableViewController {
     func deleteAction(indexPath: IndexPath) -> UIContextualAction{
         
         let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, complete) in
-            
-            
-            
-            
-            
             
             self.removeTask(indexPath: indexPath)
             self.fetchData()
@@ -166,6 +176,10 @@ extension UserTasksTVC {
      guard let managedContext = appDelegate?.persistentContainer.viewContext else{return}
         if searching{
             managedContext.delete(search[indexPath.row])
+            searchBar.text = ""
+            searchBar.resignFirstResponder()
+            searching = false
+            tableView.reloadData()
         }
         else{
         managedContext.delete(taskArray[indexPath.row])
@@ -211,6 +225,7 @@ extension UserTasksTVC : UISearchBarDelegate{
         search = taskArray.filter({$0.taskDescription!.prefix(searchText.count) == searchText})
         
         searching = true
+        
         tableView.reloadData()
         
     }
