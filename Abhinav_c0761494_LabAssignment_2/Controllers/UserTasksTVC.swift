@@ -24,7 +24,7 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
     var search:[Task] = []
     var searching = false
     var sorting = false
-    
+    var byDate = false
     
     var id:IndexPath?
     override func viewDidLoad() {
@@ -96,12 +96,25 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        
+        
+        
+        
         let taskcompletion = taskArray[indexPath.row].taskCompletionValue
         let taskDescription = taskArray[indexPath.row].taskDescription
-        let taskDate = taskArray[indexPath.row].taskDate
-       let taskDate1 = taskDate?.replacingOccurrences(of: "/", with: "")
-        print(taskDate1 as Any)
+
+
+        let destinationVC = storyboard?.instantiateViewController(identifier: "taskVC") as! TaskVC
+        destinationVC.editTask = taskDescription!
+        destinationVC.editProgress = taskcompletion
+       removeTask(indexPath: indexPath)
+        
+        navigationController?.pushViewController(destinationVC, animated: true)
+      
     }
+    
+    
+    
     
     
    
@@ -153,19 +166,21 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
     
     @IBAction func sortPressed(_ sender: UIButton) {
         
-        if sortButton.titleLabel?.text == "Sort"{
+        if sortButton.titleLabel?.text == "Title"{
                   sorting = true
                   fetchData()
                   tableView.reloadData()
                   sorting = false
-            sortButton.setTitle("Unsort", for: .normal)
+            sortButton.setTitle("Date", for: .normal)
               }
         
-        else if sortButton.titleLabel?.text == "Unsort" {
+        else if sortButton.titleLabel?.text == "Date" {
             
+            byDate = true
             fetchData()
             tableView.reloadData()
-            sortButton.setTitle("Sort", for: .normal)
+            byDate = false
+            sortButton.setTitle("Title", for: .normal)
             
         }
         
@@ -202,8 +217,14 @@ extension UserTasksTVC {
         if sorting == true {
             
             let sort1 = NSSortDescriptor(key: "taskDescription", ascending: true)
-                 
+           
                  fetchRequest.sortDescriptors = [sort1]
+        }
+        else if byDate == true{
+            
+           let sort2 = NSSortDescriptor(key: "taskDate", ascending: true)
+            
+            fetchRequest.sortDescriptors = [sort2]
         }
      
        

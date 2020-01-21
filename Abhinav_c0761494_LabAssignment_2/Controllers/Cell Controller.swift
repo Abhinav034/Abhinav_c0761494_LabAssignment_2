@@ -21,14 +21,24 @@ class Cell_Controller: UITableViewCell {
     
     @IBOutlet weak var completeView: UIView!
     
-    
    
+    
+    
+
     
     
     func cellDisplay(task: Task ){
         
         self.descriptionLbl.text = task.taskDescription
-        self.dateLbl.text = task.taskDate
+        
+        let date =  task.taskDate?.prefix(2)
+        let year = task.taskDate?.suffix(4)
+        
+        let substr = task.taskDate?.prefix(4)
+        let month = substr?.suffix(2)
+        
+        
+        self.dateLbl.text = "\(date!)/\(month!)/\(year!) "
         self.daysLbl.text = String(task.taskCompletionValue)
       
         
