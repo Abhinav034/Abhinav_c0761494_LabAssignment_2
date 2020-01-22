@@ -97,10 +97,15 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        if searching{
+           
+            return
+            
+        }
         
         
-        
-        
+        else{
+            
         let progress = taskArray[indexPath.row].progress
         let taskDescription = taskArray[indexPath.row].taskDescription
 
@@ -112,7 +117,7 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
         
         navigationController?.pushViewController(destinationVC, animated: true)
       
-       
+        }
         
     }
     
@@ -233,7 +238,13 @@ extension UserTasksTVC {
        
         
            do {
+            if searching{
+                search = try managedContext.fetch(fetchRequest)
+            }
+            else{
                taskArray = try managedContext.fetch(fetchRequest)
+            }
+               
               // print("fetched successfully")
            } catch  {
                print("Not able to fetch data --------\(error)")
@@ -257,7 +268,7 @@ extension UserTasksTVC {
         do {
             
             try managedContext.save()
-            print("removed successfully")
+         
         }
             
             catch{

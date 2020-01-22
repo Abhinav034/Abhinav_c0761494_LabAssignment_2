@@ -38,7 +38,7 @@ class Cell_Controller: UITableViewCell {
         let month = substr?.suffix(2)
         
         
-        self.dateLbl.text = "\(date!)/\(month!)/\(year!) "
+        self.dateLbl.text = "\(date!)/\(month!)/\(year!)"
         self.daysLbl.text = String(task.taskCompletionValue)
       
         
