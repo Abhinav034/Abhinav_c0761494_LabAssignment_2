@@ -234,7 +234,7 @@ extension UserTasksTVC {
         
            do {
                taskArray = try managedContext.fetch(fetchRequest)
-               print("fetched successfully")
+              // print("fetched successfully")
            } catch  {
                print("Not able to fetch data --------\(error)")
            }
