@@ -37,6 +37,7 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         fetchData()
+      
         tableView.reloadData()
     }
     
@@ -100,17 +101,19 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
         
         
         
-        let taskcompletion = taskArray[indexPath.row].taskCompletionValue
+        let progress = taskArray[indexPath.row].progress
         let taskDescription = taskArray[indexPath.row].taskDescription
 
 
         let destinationVC = storyboard?.instantiateViewController(identifier: "taskVC") as! TaskVC
         destinationVC.editTask = taskDescription!
-        destinationVC.editProgress = taskcompletion
-       removeTask(indexPath: indexPath)
+        destinationVC.editProgress = progress
+        removeTask(indexPath: indexPath)
         
         navigationController?.pushViewController(destinationVC, animated: true)
       
+       
+        
     }
     
     
