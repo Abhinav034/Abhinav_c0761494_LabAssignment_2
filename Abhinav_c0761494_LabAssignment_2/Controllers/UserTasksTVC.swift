@@ -83,11 +83,12 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
             
              let items = search[indexPath.row]
              cell.cellDisplay(task: items)
+            
              return cell
                }
         else{
                 let items = taskArray[indexPath.row]
-            id = indexPath
+              
                 cell.cellDisplay(task: items)
                 return cell
         }
@@ -95,11 +96,24 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
        
     }
     
+    
+    
+    
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if searching{
+           let progress = search[indexPath.row].progress
+           let taskDescription = search[indexPath.row].taskDescription
+
+
+           let destinationVC = storyboard?.instantiateViewController(identifier: "taskVC") as! TaskVC
+           destinationVC.editTask = taskDescription!
+           destinationVC.editProgress = progress
+           searching = false
+           removeTask(indexPath: indexPath)
+           navigationController?.pushViewController(destinationVC, animated: true)
            
-            return
             
         }
         
@@ -121,18 +135,13 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
         
     }
     
-    
-    
-    
-    
-   
-
-   
-    // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
       
         return true
     }
+    
+    
+    //MARK: Edit and delete at trailing
     
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
@@ -195,23 +204,7 @@ class UserTasksTVC: UITableViewController  , UIGestureRecognizerDelegate{
         
         
     }
-    
-    
-    
-   
-    
-    
-    
-    
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        
-        return true
-    }
- 
-   
-
-  
- 
+   // MARK: Functions for fetching and removing
     
 }
 extension UserTasksTVC {
@@ -314,6 +307,7 @@ extension UserTasksTVC {
         
     }
     
+    //MARK: Search bar fucntionality
     
 }
 extension UserTasksTVC : UISearchBarDelegate{

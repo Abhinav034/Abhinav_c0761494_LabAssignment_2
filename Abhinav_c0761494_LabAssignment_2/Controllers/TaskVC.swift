@@ -35,6 +35,7 @@ class TaskVC: UIViewController , UITextViewDelegate , UITextFieldDelegate{
        
     
         else {
+            taskTextView.becomeFirstResponder()
             TaskButton.setTitle("Add data", for: .normal)
         }
         

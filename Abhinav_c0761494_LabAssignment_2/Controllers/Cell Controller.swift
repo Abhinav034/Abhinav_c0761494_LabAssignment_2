@@ -33,7 +33,6 @@ class Cell_Controller: UITableViewCell {
         
         let date =  task.taskDate?.prefix(2)
         let year = task.taskDate?.suffix(4)
-        
         let substr = task.taskDate?.prefix(4)
         let month = substr?.suffix(2)
         
